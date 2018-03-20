@@ -9,6 +9,17 @@
         },
         "buildvars": {
             "__LOCAL__": [ false ]
+        },
+        "alias": {
+            "app": "app",
+            "clientConfig": "clientConfig",
+            "images": "images",
+            "pages": "pages",
+            "components": "components"
+        },
+        "port": 3000,
+        "proxy": {
+            "/":"http://120.26.110.80:8086"
         }
     }
 }
