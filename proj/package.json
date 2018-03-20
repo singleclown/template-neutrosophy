@@ -13,9 +13,14 @@
   },
   "homepage": "<%- homepage %>",
   "license": "MIT",
-  "dependencies": {
-    "classnames": "~2.1.2",
-    "i18n-helper": "~1.1.1",
-    "react-mixin": "~1.7.0"
+  "dependencies":{
+    "babel-polyfill": "^6.26.0",
+    "classnames": "^2.2.5",
+    "i18n-helper": "^1.2.0",
+    "natty-fetch": "^2.5.2",
+    "react-keeper": "^2.1.6",
+    "react-mixin": "~1.7.0",
+    "saltui": "^3.5.13",
+    "whatwg-fetch": "^2.0.3"
   }
 }
