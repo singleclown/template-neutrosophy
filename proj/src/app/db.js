@@ -9,14 +9,14 @@ nattyFetch.setGlobal({
 });
 const context = nattyFetch.context({
     mockUrlPrefix: '/mock/',
-    urlPrefix: '/', 
+    urlPrefix: '/app/', 
     header: {
         'Content-Type': 'application/json;charset=utf-8'
     },
     mock: false,
     withCredentials: false,
     traditional: true,
-    urlStamp: false,
+    urlStamp: true,
     urlMark: false,
     timeout: 0,
     fit: function (response) {
@@ -31,19 +31,31 @@ const context = nattyFetch.context({
         }
     }
 });
-context.create('Notice', {
-    get_notice_lists: {
-        mockUrl: 'query/getListInfo.json',
-        url: 'notice/tcrReceivedNotices'
+context.create('Auth', {
+    get_free_login: {
+        url: '/auth/getConfig'
     },
-    get_sentnotice_lists: {
-        mockUrl: 'query/getListInfo.json',
-        url: 'notice/tcrSentNotices'
+    get_user_info: {
+        url: '/user/userinfo'
     },
-    get_org_lists: {
-        mockUrl: 'query/getOrgListInfo.json',
-        url: '/notice/tcrSentNotices'
+    get_redis_info:{
+        url:'/redis/getUserByRedis'
     }
 });
-
+context.create('Teacher', {
+    get_award_lists: {
+        url: 'award/teacher/tchAwardList'
+    },
+    get_award_detail: {
+        url: 'award/resource/getAwardDetail'
+    },
+     get_class_lists: {
+        url: 'baseApi/teacher/tchNewClassList'
+    }
+});
+context.create('Parent', {
+    get_award_lists: {
+        url: 'award/parent/prtAwardList'
+    }
+});
 module.exports = context.api;

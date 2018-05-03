@@ -1,89 +1,64 @@
 require('./Rollup.styl');
 const classNames = require('classnames');
-import { Boxs, Scroller } from 'saltui'
-import Icon from 'salt-icon';
-const { HBox, Box } = Boxs;
+import { Boxs, Group, List } from 'saltui';
+import AngleUp from 'salt-icon/lib/AngleUp';
+const { HBox, Box, VBox } = Boxs;
 class Rollup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            isUp: false,
-            top_select: false
-        };
-        this.handleClick = this.handleClick.bind(this);
-        this.clickIcon = this.clickIcon.bind(this);
-    }
-    //列表项icon点击
-    clickIcon(e) {
-        e.stopPropagation()
-        this.setState({ top_select: !this.state.top_select }, () => {
-            for (let key in this.props.data.content) {
-                let id = [`active${key}`];
-                let values = (eval(`this.state.${id}`));
-                if (this.state.top_select != values) {
-                    this.setState({ [`active${key}`]: this.state.top_select })
-                }
-            }
-        })
-    }
-    //点击列表项
-    handleClick() {
-        this.setState({ isUp: !this.state.isUp })
-    }
-    //点击列表项子项
-    handleClickIcon(index) {
-        let id = [`active${index}`];
-        let values = (eval(`!this.state.${id}`));
-        this.setState({ [`active${index}`]: values }, () => {
-            if (values) {
-                for (let key in this.props.data.content) {
-                    let id = [`active${key}`];
-                    let item = (eval(`this.state.${id}`));
-                    if (!item) { break; }
-                    if (item && key == this.props.data.content.length - 1) {
-                        this.setState({ top_select: true })
+        if (props.type == "class" && this.props.listdata instanceof Array && this.props.listdata.length > 0) {
+            if(props.classId){
+                for(let item of this.props.listdata){
+                    if(item.classId==props.classId){
+                        var title = item.title;
+                        this.classId = item.classId;
+                        break;
                     }
                 }
-            } else {
-                if (this.state.top_select) {
-                    this.setState({ top_select: false })
-                }
+                
             }
-        })
+        } 
+        this.state = {
+            isUp: false,
+            title: title
+        };
+        this.clickHead = this.clickHead.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+    clickHead() {
+        this.setState({ isUp: !this.state.isUp });
+    }
+    handleClick(event, dataItem) {
+        let t = this;
+        if (t.props.type == "class") {
+            this.setState({ title: dataItem.title, isUp: !this.state.isUp })
+            this.classId = dataItem.classId;
+            t.props.refresh && t.props.refresh(dataItem.classId);
+        } 
     }
     render() {
         let t = this;
         return (
-            <div className="rollup" >
-                <HBox vAlign="center" onClick={this.handleClick}>
-                    <Box ><span className={classNames({ "right-triangle": !t.state.isUp, "top-triangle": t.state.isUp })}></span></Box>
-                    <Box flex={3} className="t-ML17">{t.props.data.title}<span className="t-ML5">({t.props.data.content.length})</span></Box>
-                    <Box flex={1} className="t-FAC"><Icon name="check-round" fill={this.state.top_select ? "#53CAC3" : "#E5E5E5"} width={15} height={15} onClick={this.clickIcon} /></Box>
+            <div className="rollup">
+                <HBox vAlign="center" onClick={this.clickHead} >
+                    <Box flex={1} className="rollup-title t-ML10">
+                        {t.state.title}
+                    </Box>
+                    <Box flex={1} className='t-FAR t-MR10'>
+                        <AngleUp  className={classNames({"spinning":!this.state.isUp})} fill="#999" />
+                    </Box>
                 </HBox>
-                {t.state.isUp && (t.props.data.content instanceof Array ? t.props.data.content.map((item, index) => {
-                    return (
-                        <div className="rollitem">
-                            <HBox vAlign="center" className="t-PL30">
-                                <Box flex={3}>
-                                    {item}
-                                </Box>
-                                <Box flex={1} className="t-FAC">
-                                    <Icon
-                                        name="check-round"
-                                        fill={(eval(`t.state.active${index}`)) ? "#53CAC3" : "#E5E5E5"}
-                                        width={15}
-                                        height={15}
-                                        onClick={this.handleClickIcon.bind(t, index)}
-                                    />
-                                </Box>
-                            </HBox>
-                        </div>
-                    );
-                })
-                    :
-                    null)
-                }
+                {this.state.isUp && t.props.listdata instanceof Array && t.props.listdata.length > 0 ?
+                    <List
+                        layout=""
+                        className="rollup-list-item"
+                        hasRightIcon={false}
+                        isDelete={false}
+                        demoTitle=""
+                        onClick={this.handleClick}
+                        data={t.props.listdata}
+                    /> : null}
             </div>
         );
     }
@@ -95,7 +70,9 @@ class Rollup extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
+        // if (nextProps.listdata instanceof Array && nextProps.listdata.length > 0) {
+        //     this.setState({ title: nextProps.listdata[0].title });
+        // }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -111,7 +88,5 @@ class Rollup extends React.Component {
     componentWillUnmount() {
     }
 }
-Rollup.defaultProps = {
-    content: []
-};
+
 module.exports = Rollup;
