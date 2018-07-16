@@ -52,4 +52,22 @@ module.exports = class device {
             onFail: function (err) { cb && cb(false, err) }
         });
     }
+    static showPreloader(parms = {}, cb) {
+        dd.device.notification.showPreloader({
+            text: parms.text || "使劲加载中..", //loading显示的字符，空表示不显示文字
+            showIcon: parms.showIcon, //是否显示icon，默认true。Android无此参数。
+            onSuccess: function (result) {
+                cb && cb(true, result);
+            },
+            onFail: function (err) { cb && cb(false, err) }
+        })
+    }
+    static hidePreloader(parms = undefined, cb = undefined) {
+        dd.device.notification.hidePreloader({
+            onSuccess: function (result) {
+                cb && cb(true, result);
+            },
+            onFail: function (err) { cb && cb(false, err) }
+        })
+    }
 }

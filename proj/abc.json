@@ -5,10 +5,12 @@
         "template": "<%- template %>",
         "npm": "<%- npm %>",
         "vars": {
-            "__LOCAL__": true
+            "__LOCAL__": true,
+            "DOMAIN":"https://www.zxjydev.com"
         },
         "buildvars": {
-            "__LOCAL__": [ false ]
+            "__LOCAL__": [ true ],
+            "DOMAIN": ["http://www.zxjy360.com"]
         },
         "alias": {
             "app": "app",

@@ -1,6 +1,7 @@
 .rollup
     display block
     background: white
+    position relative
     >div:first-child
       height 44px
       border-bottom: 1px solid #e4e6e6
@@ -10,3 +11,13 @@
         background-color: #e4e6e6
     .spinning
         transform: rotateX(180deg)
+    &-container
+        position: absolute
+        top 44px
+        left 0
+        right 0
+        height: auto
+        max-height: 220px
+        z-index 1000
+  
+

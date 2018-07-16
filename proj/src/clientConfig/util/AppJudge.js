@@ -6,10 +6,11 @@ const Storage = require('clientConfig/util/StoreData').Storage;
 const DB = require('app/db');
 let start = Symbol('fnstart');
 let monStorage = require('./StoreData').monStorage
-import { Toast } from 'saltui';
-function bar(info) {
-    this[start](info);
-}
+import { Toast,Dialog } from 'saltui';
+
+/**
+ * 除了home界面,所有这个方法只需要鉴权
+ */
 class Appjudge {
     /*
      *signUrl:签名的url
@@ -23,6 +24,7 @@ class Appjudge {
         let url = location.href.split('#', 1);
         let signUrl = encodeURIComponent(url);
         DB.Auth.get_free_login({
+            schoolId:Storage.get("user.schoolId"),
             url: url
         })
             .then((content) => {
@@ -30,16 +32,21 @@ class Appjudge {
                     let corpid = content.corpId;
                     DingClient.clientConfig(content, function (isSuccessed, data) {
                         if (isSuccessed) {
-                            //微应用
-                            dd.runtime.permission.requestAuthCode({
-                                corpId: corpid,
-                                onSuccess: function (result) {
-                                    //1.code获取微应用关注者信息
-                                    t.loginmicro(result.code, corpid);
-                                },
-                                onFail: function (err) { }
-                            });
+                            //鉴权成功,跳转
+                            let type = Storage.get("user.type");
+                            if(0 == type){
+                                getDomRouter(0);
+                            }else if(1 == type){
+                                getDomRouter(1);
+                            }
                         } else {
+                            Dialog.alert({
+                                title: '提示',
+                                content: "鉴权失败",
+                                onConfirm() {
+                                },
+                            });
+                            return;
                             console.log(JSON.stringify(data));
                         }
                     });
@@ -50,56 +57,11 @@ class Appjudge {
             .catch(function (error) {
                 Toast.show({
                     type: 'error',
-                    content: '系统异常'
+                    content: "系统正在维护"
                 });
             });
     }
-    //微应用获取用户信息
-    static loginmicro(code, corpid) {
-        DB.Auth.get_user_info({
-            code,
-            corpid
-        })
-            .then((content) => {
-                if (content) return { mobile: content.mobile, talkId: content.extattr.activeTalkId }
-
-            }).then((params) => {
-                if (!params) return;
-                DB.Auth.get_redis_info({
-                    mobile: params.mobile,
-                    talkId: params.talkId
-                })
-                    .then((content) => {
-                        if (content) {
-                            bar.call(this, content);
-                        } else {
-                            console.log('获取用户信息失败');
-                            return;
-                        }
-                    });
-
-            })
-            .catch(function (error) {
-                Toast.show({
-                    type: 'error',
-                    content: '系统异常'
-                });
-            });
-    }
-
-    static [start](info) {
-        dd.ui.webViewBounce.disable();
-        Storage.set('user.talkId', info.talkId)//智学号
-        Storage.set('user.parentId', info.parentId)
-        Storage.set('user.studentId', info.studentId)
-        Storage.set('user.classId', info.classId)
-        Storage.set('user.name', info.name)
-        Storage.set('user.schoolId', info.schoolId)
-        Storage.set('user.type', info.type)//0老师1家长
-        Storage.set('user.teacherId', info.teacherId)
-        Storage.set('user.mobile', info.mobile)
-        getDomRouter(info.type);
-    }
+    
 }
 
 module.exports = Appjudge;

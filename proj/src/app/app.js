@@ -2,17 +2,19 @@ require('./app.styl');
 import 'babel-polyfill'
 import 'whatwg-fetch';
 import {getDomRouter} from 'clientConfig/util/Page_router';
-const Storage = require('clientConfig/util/StoreData').Storage;
 const Appjudge = require('clientConfig/util/AppJudge');
-if (!__LOCAL__) {
+const Storage = require('clientConfig/util/StoreData').Storage;
+Storage.set('user.talkId', '9686')//智学号
+Storage.set('user.parentId', '9774')
+Storage.set('user.studentId', '25618')//25618，24900
+Storage.set('user.classId', '3013')//3013，2819
+Storage.set('user.name', 'xxx')
+Storage.set('user.schoolId', 'f20171120')
+Storage.set('user.type', 0)//0老师1家长
+Storage.set('user.teacherId', '4732')
+Storage.set('user.mobile', '')
+if (__LOCAL__) {
     getDomRouter(0);
 } else {
-    let type = Storage.get("user.type");
-    if (0 == type) {
-        getDomRouter(0);
-    } else if (1 == type) {
-        getDomRouter(1);
-    } else {
-        Appjudge.init();
-    }
+    Appjudge.init();
 }
