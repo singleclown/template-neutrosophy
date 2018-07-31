@@ -3,6 +3,7 @@ require('./Page<%- Name %>.styl');
 const reactMixin = require('react-mixin');
 const Actions = require('./actions');
 const Store = require('./store');
+import { Control } from 'react-keeper'
 <% } %>
 class <%- Name %> extends React.Component {
 
@@ -10,8 +11,11 @@ class <%- Name %> extends React.Component {
         super(props);
         this.state = {
         };
+        this.handleOnLeftClick = this.handleOnLeftClick.bind(this);
     }
-
+    handleOnLeftClick() {
+        Control.go(-1)
+    }
     render() {
         return (
             <div className="<%= name %>">
